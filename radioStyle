@@ -24,3 +24,18 @@
                         </div>
                     </div>
 	*/
+/*css
+/* radio style */
+.radio-wrap{width:19px;height:19px;background:url(../images/checked-select-icon.png) no-repeat 0 -38px;display:inline-block;}
+.radio-wrap:hover{background-position:-19px -38px;}
+.radio-wrap:active{background-position:-38px -38px;}
+.radio-wrap:visited{background-position:-57px -38px;}
+
+.radw-on{background-position:0 -57px;}
+.radw-on:hover{background-position:-19px -57px;}
+.radw-on:active{background-position:-38px -57px;}
+.radw-on:visited{background-position:-57px -57px;}
+
+.radio-wrap input[type=radio]{opacity:0;width:19px;height:19px;vertical-align:middle;}
+label.radio-label{}
+*/
