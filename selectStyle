@@ -1,0 +1,44 @@
+//select
+	var smSelWrap=$('.sm-sel-wrap'),
+		smSelText=$('.sm-sel-text',smSelWrap),
+		smSelBtn=$('.sm-sel-btn',smSelWrap),
+		smSelList=$('.sm-sel-list',smSelWrap);
+		smSelBtn.add(smSelText).click(function(evt){
+			if(smSelList.is(':visible')){
+				smSelList.hide();
+			}else{
+				smSelList.show();
+			}
+			evt.stopPropagation();
+		});
+		smSelList.find('a').click(function(){
+			var thisVal=$(this).html();
+			smSelText.val(thisVal);
+			smSelList.hide();
+		});
+		$(document).click(function(){
+			smSelList.hide();
+		});
+		
+		/* html:
+		<div class="ssl-item">
+                    	<div class="sm-sel-wrap">
+                        	<input type="text" class="sm-sel-text" value="使用浏览器设置" readonly /><button class="sm-sel-btn"></button>
+                        	<p class="sm-sel-list" style="display:none;">
+                            	<a href="javascript:;">使用浏览器设置</a>
+                                <a href="javascript:;">不使用代理</a>
+                                <a href="javascript:;">自定义代理</a>
+                            </p>
+                        </div>
+                    </div>
+		*/
+		/*css:
+		/* select style */
+.sm-sel-wrap{position:relative;}
+.sm-sel-wrap .sm-sel-text{width:108px;border:#ced1d5 solid 1px;border-right:none;border-radius:2px 0 0 2px;height:22px;box-shadow:1px 1px 0 #e5e9ee,1px 1px 0 #e5e9ee inset;padding-left:3px;padding-top:2px;vertical-align:middle;margin-top:-1px;}
+.sm-sel-wrap .sm-sel-btn{width:23px;height:26px;border:#ced1d5 solid 1px;border-left:none;border-radius:0 2px 2px 0;background:#f0f0f0 url(../images/sel-btn-icon.png) no-repeat center 10px;vertical-align:middle;box-shadow:1px 1px 0 #e5e9ee,1px 1px 0 #e5e9ee inset;}
+.sm-sel-wrap .sm-sel-list{width:129px;border:#ced1d5 solid 1px;border-radius:2px;padding:2px;box-shadow:1px 1px 2px #e5e9ee;position:absolute;top:27px;left:0;background-color:#FFF;}
+.sm-sel-wrap .sm-sel-list a{display:block;line-height:20px;padding-left:5px;color:#000;}
+.sm-sel-wrap .sm-sel-list a:hover{background-color:#ffd278;text-decoration:none;}
+		
+		*/
