@@ -1,0 +1,26 @@
+//radio
+	var radioWrap=$('.radio-wrap');
+	radioWrap.click(function(){
+		var meEl=$(this);
+		var radioFilterWrap=meEl.parents('.radio-filter-wrap');
+		var radioEl=radioFilterWrap.find('input[type=radio]');
+		if(radioEl.is(':checked')){
+			radioFilterWrap.find(radioWrap).removeClass('radw-on')
+			meEl.addClass('radw-on');
+		}else{
+			meEl.removeClass('radw-on');
+		}
+	});
+	
+	/* html:
+	<div class="radio-filter-wrap">
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mpanel-radio" id="sm-hide-stus" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-hide-stus">隐藏到任务栏通知区域，不退出程序</label>
+                        </div>
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mpanel-radio" id="sm-out-soft" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-out-soft">退出程序</label>
+                        </div>
+                    </div>
+	*/
