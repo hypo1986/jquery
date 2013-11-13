@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>set</title>
+<link href="css/base.css" type="text/css" rel="stylesheet" />
+<link href="css/web-common.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="js/web-common.js"></script>
+<script type="text/javascript">
+        //接口 render
+		$(function () {
+            console.log('OptionsDialog.Network Html Loaded.');
+			var agentSelType=$('#agent-sel-type'),
+				agentAdress=$('#agent-adress'),
+				agentPort=$('#agent-port'),
+				agentUsername=$('#agent-username'),
+				agentPassword=$('#agent-password'),
+				agentBtn=$('#agent-btn');
+			//console.log(agentSelType.val());
+			var	pServer=agentAdress.val()+':'+agentPort.val();
+			var sType='';
+			if(agentSelType=='使用浏览器设置'){
+				sType=1;
+			}else if(agentSelType=='不使用代理'){
+				sType=2;
+			}else{
+				sType=3;
+			}
+			var selListEl=$('.sm-sel-list');
+			selListEl.find('a').click(function(){
+				var meElVal=$(this).html();
+				if(meElVal == '使用浏览器设置'){
+					agentAdress.prop('disabled',true);
+					agentPort.prop('disabled',true);
+					agentUsername.prop('disabled',false);
+					agentPassword.prop('disabled',false);
+				}else if(meElVal == '不使用代理'){
+					agentAdress.prop('disabled',true);
+					agentPort.prop('disabled',true);
+					agentUsername.prop('disabled',true);
+					agentPassword.prop('disabled',true);
+				}else{
+					agentAdress.prop('disabled',false);
+					agentPort.prop('disabled',false);
+					agentUsername.prop('disabled',false);
+					agentPassword.prop('disabled',false);
+				}
+				var paramJson = {
+						"Pwd":agentPassword.val(),
+						"Server":pServer,
+						"Type":sType,
+						"User":agentUsername.val()
+					}; 
+				var rst=SM.exec('/ChangeBatch/代理服务器', '', paramJson );
+				console.log(rst);
+			});
+			//btn smit
+			agentBtn.click(function(){
+				var paramJson = {
+						"Pwd":agentPassword.val(),
+						"Server":pServer,
+						"Type":sType,
+						"User":agentUsername.val()
+					}; 
+				var rst=SM.exec('/ChangeBatch/代理服务器', '', paramJson );
+				console.log(rst);
+			});
+            var paramValue = '';
+            var jsonValue = {};
+            SM.ajax('/LoadOptions/All', paramValue, jsonValue, function (status, desc, json) {
+					if (status == 200) {
+						var s = JSON.stringify(json);
+						console.log(s);
+						var proxy = json.ProxySetting;
+						if (typeof proxy == 'object') {
+							var s = JSON.stringify(proxy);
+							console.log(s);
+						}
+						else {
+							console.log('view Default Proxy Setting');
+						}
+					}
+				});
+	
+			});
+			function testChangeBatch() {
+				var paramValue = '';
+				var jsonValue = { 'Type': 3, 'Server': '192.168.20.41:8080', 'User': 'alario', "Pwd": '123456' };
+				SM.ajax('/ChangeBatch/ProxySetting', paramValue, jsonValue, function (status, desc, json) {
+					if (status == 200) {
+						var s = JSON.stringify(json);
+						console.log(s);
+
+					}
+            });
+        }
+    </script>
+</head>
+
+<body>
+<section class="set-wrap fn-clear">
+	<!-- set left start -->
+	<aside class="set-left-wrap fn-left">
+    	<ul class="set-left-list">
+        	<li class="sla-on"><a href="javascript:;">代理服务器</a></li>
+        </ul>
+    </aside>
+    <!-- set left end -->
+    <!-- set right start -->
+    <article class="set-main-wrap fn-left">
+    	<!-- section 代理服务器 -->
+        <section class="sm-section section-agent" id="section-agent-tpl">
+        	<dl class="sm-section-list fn-clear">
+            	<dt class="fn-left">代理服务器：</dt>
+                <dd class="fn-left">
+                	<div class="ssl-item">代理类型</div>
+                    <div class="ssl-item">
+                    	<div class="sm-sel-wrap">
+                        	<input type="text" class="sm-sel-text" value="使用浏览器设置" readonly /><button class="sm-sel-btn"></button>
+                        	<p class="sm-sel-list" style="display:none;">
+                            	<a href="javascript:;">使用浏览器设置</a>
+                                <a href="javascript:;">不使用代理</a>
+                                <a href="javascript:;">自定义代理</a>
+                            </p>
+                        </div>
+                    </div>
+                	<div class="ssl-item margt15">
+                    	<label class="sm-dl-label">地址：</label><input type="text" class="sm-inp-text" style="width:135px;" />
+                        <label class="sm-dl-label dl-label-r">端口：</label><input type="text" class="sm-inp-text" style="width:135px;" />
+                    </div>
+                    <div class="ssl-item">
+                    	<label class="sm-dl-label">用户名：</label><input type="text" class="sm-inp-text" style="width:135px;" />
+                        <label class="sm-dl-label dl-label-r">密码：</label><input type="password" class="sm-inp-text" style="width:135px;" />
+                    </div>
+                    <div class="ssl-item margt15"><button style="width:80px;" class="sm-button">测试</button></div>
+                </dd>
+            </dl>
+        </section>
+        
+        
+    </article>
+    <!-- set right end -->
+</section>
+</body>
+</html>

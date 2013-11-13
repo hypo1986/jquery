@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>set</title>
+<link href="css/base.css" type="text/css" rel="stylesheet" />
+<link href="css/web-common.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="js/web-common.js"></script>
+<script type="text/javascript">
+        $(function () {
+			//接口 render
+            console.log('OptionsDialog.Basic Html Loaded.');
+            var paramValue = '';
+            var jsonValue = {};
+			//checkbox update style functon
+			function chkfun(chkname){
+				if(chkname.is(':checked')){
+					chkname.parent().addClass('cbkw-on');
+				}else{
+					chkname.parent().removeClass('cbkw-on');
+				}
+			}
+			//radio update style functon
+			function radfun(radname){
+				if(radname.is(':checked')){
+					radname.parents('.radio-filter-wrap').find('.radio-wrap').removeClass('radw-on')
+					radname.parent().addClass('radw-on');
+				}else{
+					radname.parent().removeClass('radw-on');
+				}
+			}
+			//checkbox var
+			var smOpenpcStartup=$('#sm-openpc-startup'),
+				smAutoLogin=$('#sm-auto-login'),
+				smOtherBefore=$('#sm-other-before'),
+				smOpenUpdate=$('#sm-open-update');
+			//radio var
+			var smHideStus=$('#sm-hide-stus'),
+				smOutSoft=$('#sm-out-soft'),
+				smStusFlash=$('#sm-stus-flash'),
+				smAutoAlert=$('#sm-auto-alert'),
+				smSaveDoc=$('#sm-save-doc'),
+				smUserCustom=$('#sm-user-custom');
+			//file catalog var
+			var fileCatalogText=$('#file-catalog-text'),
+				fileCatalogEdit=$('#file-catalog-edit'),
+				fileCatalogOpen=$('#file-catalog-open');
+			var choiceMfileText=$('#choice-mfile-text'),
+				choiceMfileBtn=$('#choice-mfile-btn'),
+				justClearBtn=$('#just-clear-btn');	
+            SM.ajax('/LoadOptions/All', paramValue, jsonValue, function (status, desc, json) {
+                if (status == 200) {
+                    var s = JSON.stringify(json);
+                    console.log(s);
+					//checkbox response get
+					var chkOpenpcStartup=json['开机自动启动'],
+						chkAutoLogin=json['自动登录'],
+						chkOtherBefore=json['始终保持在其他窗口前端'],
+						chkOpenUpdate=json['开启后台检查更新'];
+					//checkbox render
+					smOpenpcStartup.attr('checked',chkOpenpcStartup);
+                    chkfun(smOpenpcStartup);
+					smAutoLogin.attr('checked',chkAutoLogin);
+                    chkfun(smAutoLogin);
+					smOtherBefore.attr('checked',chkOtherBefore);
+                    chkfun(smOtherBefore);
+					smOpenUpdate.attr('checked',chkOpenUpdate);
+                    chkfun(smOpenUpdate);
+					//radio response get
+					var radClosePanel=json['关闭主面板时'],
+						radInfoRemind=json['消息提醒方式'];
+					//radio render
+					if(radClosePanel == 1){
+						smHideStus.attr('checked',true);
+						smOutSoft.attr('checked',false);
+					}else if(radClosePanel == 2){
+						smHideStus.attr('checked',false);
+						smOutSoft.attr('checked',true);
+					}else{
+						smHideStus.attr('checked',false);
+						smOutSoft.attr('checked',false);
+					}
+					radfun(smHideStus);
+					radfun(smOutSoft);
+					if(radInfoRemind == 1){
+						smStusFlash.attr('checked',true);
+						smAutoAlert.attr('checked',false);
+					}else if(radInfoRemind == 2){
+						smStusFlash.attr('checked',false);
+						smAutoAlert.attr('checked',true);
+					}else{
+						smStusFlash.attr('checked',false);
+						smAutoAlert.attr('checked',false);
+					}
+					radfun(smStusFlash);
+					radfun(smAutoAlert);
+					//file catalog response get	
+					var fileTextCatalog=json['接收文件目录'];
+					//file catalog render
+					fileCatalogText.val(fileTextCatalog);	
+					fileCatalogEdit.click(function(){
+						var paramJson = { '当前目录' : fileCatalogText.val() };
+						var rst=SM.exec( '/FileManage/接收文件更改目录', '', paramJson );
+						console.log( rst );
+						fileCatalogText.val( rst.desc );
+					});
+					fileCatalogOpen.click(function(){
+						var paramJson = { '当前目录' : fileCatalogText.val() };
+						var rst=SM.exec( '/FileManage/打开文件夹', '', paramJson );
+					});
+					//choice personal file get
+					var radChoiceFile=json['个人文件夹'].Choice,
+						dirChoiceFile=json['个人文件夹'].Dir;
+					//choice personal file render
+					if(radChoiceFile == 1){
+						smSaveDoc.attr('checked',true);
+						smUserCustom.attr('checked',false);
+						choiceMfileBtn.prop('disabled',true);
+						choiceMfileBtn.addClass('btn-disabled');
+					}else if(radChoiceFile == 2){
+						smSaveDoc.attr('checked',false);
+						smUserCustom.attr('checked',true);
+						choiceMfileBtn.prop('disabled',false);
+						choiceMfileBtn.removeClass('btn-disabled');
+					}else{
+						smSaveDoc.attr('checked',false);
+						smUserCustom.attr('checked',false);
+					}
+					radfun(smSaveDoc);
+					radfun(smUserCustom);
+					//浏览
+					choiceMfileText.val(dirChoiceFile);	
+                }
+            });
+			//checkbox require post
+            smOpenpcStartup.click(function () {
+                var paramString = this.checked ? 'Yes' : 'No';
+                var paramJson = {};
+				var rst = SM.exec( '/ChangeChecked/开机自动启动', paramString, paramJson );
+				console.log( rst.status );
+            });
+			smAutoLogin.click(function () {
+                var paramString = this.checked ? 'Yes' : 'No';
+                var paramJson = {};
+				var rst = SM.exec( '/ChangeChecked/自动登录', paramString, paramJson );
+				console.log( rst.status );
+            });
+			smOtherBefore.click(function () {
+                var paramString = this.checked ? 'Yes' : 'No';
+                var paramJson = {};
+				var rst = SM.exec( '/ChangeChecked/始终保持在其他窗口前端', paramString, paramJson );
+				console.log( rst.status );
+            });
+			smOpenUpdate.click(function () {
+                var paramValue = this.checked ? 'Yes' : 'No';
+                var jsonValue = {};
+                SM.ajax('/ChangeChecked/开启后台检查更新',paramValue, jsonValue, function (status, desc, json) {
+					 console.log( status );
+					 console.log( desc );
+					 console.log( json );
+				});	
+            });
+			//radio require post
+			var mpanelRadio=$('.set-radio').filter("input[name='mpanelRadio']");
+            mpanelRadio.click(function () {
+                var itemValue = $(this).val();
+                var paramJson = {};
+				var rst = SM.exec( '/ChangeSelectValue/关闭主面板时', itemValue, paramJson );
+				console.log( rst.status );
+            });
+			var mqxRadio=$('.set-radio').filter("input[name='mqxRadio']");
+            mqxRadio.click(function () {
+                var itemValue = $(this).val();
+                var paramJson = {};
+				var rst = SM.exec( '/ChangeSelectValue/消息提醒方式', itemValue, paramJson );
+				console.log( rst.status );
+            });
+			var mfileRadio=$('.set-radio').filter("input[name='mfileRadio']");
+            mfileRadio.click(function () {
+                var itemValue = $(this).val();
+				var taction='';
+				if(itemValue == 1){
+					choiceMfileBtn.prop('disabled',true);
+					choiceMfileBtn.addClass('btn-disabled');
+					taction='Radio';
+				}else{
+					choiceMfileBtn.prop('disabled',false);
+					choiceMfileBtn.removeClass('btn-disabled');
+					taction='Browse';
+				}
+                var paramJson = {'Choice': 2, 'Dir': choiceMfileText.val(), Action: taction};
+				var rst = SM.exec( '/FileManage/个人文件夹', itemValue, paramJson );
+				console.log( rst.status );
+				
+            });
+			choiceMfileBtn.click(function(){
+				var paramJson = {'Choice': 2, 'Dir': choiceMfileText.val(), Action: 'Browse'};
+				var rst=SM.exec( '/FileManage/个人文件夹', '', paramJson );
+				console.log( rst.status );
+			});
+			//clear file require post
+            justClearBtn.click(function () {
+                var paramValue = '';
+                var jsonValue = {};
+                var rst = SM.ajax('/FileManage/清理个人文件夹',paramValue, jsonValue, function (status, desc, json) {
+				});
+				//console.log( rst.status );	
+            });
+        });
+    </script>
+</head>
+
+<body>
+<section class="set-wrap fn-clear">
+	<!-- set left start -->
+	<aside class="set-left-wrap fn-left">
+    	<ul class="set-left-list">
+        	<li class="sla-on"><a href="javascript:;">登录</a></li>
+            <li><a href="javascript:;">主面板</a></li>
+            <li><a href="javascript:;">企信</a></li>
+            <li><a href="javascript:;">文件管理</a></li>
+            <li><a href="javascript:;">软件更新</a></li>
+        </ul>
+    </aside>
+    <!-- set left end -->
+    <!-- set right start -->
+    <article class="set-main-wrap fn-left">
+    	<!-- section 登录 -->
+        <section class="sm-section" id="section-login-tpl">
+        	<dl class="sm-section-list fn-clear">
+            	<dt class="fn-left">登录：</dt>
+                <dd class="fn-left">
+                	<div class="ssl-item">
+                    	<span class="checkbox-wrap"><input type="checkbox" id="sm-openpc-startup" class="set-checkbox" /></span>
+                    	<label class="checkbox-label" for="sm-openpc-startup">开机自动启动</label>
+                    </div>
+                    <div class="ssl-item">
+                    	<span class="checkbox-wrap"><input type="checkbox" id="sm-auto-login" class="set-checkbox" /></span>
+                    	<label class="checkbox-label" for="sm-auto-login">自动登录</label>
+                    </div>
+                </dd>
+            </dl>
+        </section>
+        <!-- section 主面板 -->
+        <section class="sm-section" id="section-mpanel-tpl">
+        	<dl class="sm-section-list fn-clear">
+            	<dt class="fn-left">主面板：</dt>
+                <dd class="fn-left">
+                	<div class="ssl-item">
+                    	<span class="checkbox-wrap"><input type="checkbox" id="sm-other-before" class="set-checkbox" /></span>
+                    	<label class="checkbox-label" for="sm-other-before">始终保持在其他窗口前端</label>
+                    </div>
+                    <div class="ssl-item">关闭主面板时</div>
+                    <div class="radio-filter-wrap">
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mpanel-radio" id="sm-hide-stus" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-hide-stus">隐藏到任务栏通知区域，不退出程序</label>
+                        </div>
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mpanel-radio" id="sm-out-soft" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-out-soft">退出程序</label>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+        </section>
+        <!-- section 企信 -->
+        <section class="sm-section" id="section-mqx-tpl">
+        	<dl class="sm-section-list fn-clear">
+            	<dt class="fn-left">企信：</dt>
+                <dd class="fn-left">
+                    <div class="ssl-item">消息提醒方式</div>
+                    <div class="radio-filter-wrap">
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mqx-radio" id="sm-stus-flash" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-stus-flash">在系统托盘区闪烁提醒</label>
+                        </div>
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mqx-radio" id="sm-auto-alert" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-auto-alert">聊天窗口自动弹出</label>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+        </section>
+        <!-- section 文件管理 -->
+        <section class="sm-section" id="section-mfile-tpl">
+        	<dl class="sm-section-list fn-clear">
+            	<dt class="fn-left">文件管理：</dt>
+                <dd class="fn-left">
+                	<div class="ssl-item">默认把接收到的文件保存到此文件夹：</div>
+                    <div class="ssl-item"><input type="text" class="sm-inp-text" style="width:320px;" /></div>
+                    <div class="ssl-item"><button class="sm-button">更改目录</button><button class="sm-button margl10">打开文件夹</button></div>
+                    <div class="ssl-item">选择个人文件夹（用于保存消息记录等数据）的保存位置</div>
+                    <div class="radio-filter-wrap">
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mfile-radio" id="sm-save-doc" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-save-doc">保存到我的文档</label>
+                        </div>
+                        <div class="ssl-item margl25">
+                            <span class="radio-wrap"><input type="radio" name="mfile-radio" id="sm-user-custom" class="set-radio" /></span>
+                            <label class="radio-label" for="sm-user-custom">自定义</label>
+                        </div>
+                    </div>
+                    <div class="ssl-item"><input type="text" class="sm-inp-text" style="width:260px;" /><button class="sm-button margl10 btn-disabled">浏览</button></div>
+                    <div class="ssl-item">您可以清理个人文件夹中的消息记录、图片等内容，释放磁盘空间</div>
+                    <div class="ssl-item"><button class="sm-button">立即清理</button></div>
+                </dd>
+            </dl>
+        </section>
+        <!-- section 软件更新 -->
+        <section class="sm-section" id="section-mupdate-tpl">
+        	<dl class="sm-section-list fn-clear">
+            	<dt class="fn-left">软件更新：</dt>
+                <dd class="fn-left">
+                    <div class="ssl-item">
+                    	<span class="checkbox-wrap"><input type="checkbox" id="sm-open-update" class="set-checkbox" /></span>
+                    	<label class="checkbox-label" for="sm-open-update">开启后台检查更新</label>
+                    </div>
+                </dd>
+            </dl>
+        </section>
+        
+    </article>
+    <!-- set right end -->
+</section>
+</body>
+</html>
