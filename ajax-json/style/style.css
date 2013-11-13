@@ -1,0 +1,15 @@
+
+.orange{color:#dd4b39!important;}
+.grey{color:#999999!important;}
+.marg10{margin-top:10px;}
+.padb25{padding-bottom:25px;}
+input{outline:none;}
+input,input[type=checkbox]{vertical-align:middle;}
+.position_re{position:relative;}
+
+.img-list-wrap{width:770px;border:#ebebeb solid 1px;}
+
+.img-list{}
+.img-list li{width:160px;float:left;margin:25px 0 0 25px;text-align:left;display:inline;}
+.img-list li img{width:150px;height:112px;border:#949494 solid 1px;padding:3px;}
+.img-list li span{color:#999999;display:block;}
